@@ -55,7 +55,7 @@ export function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostMo
         .from('posts')
         .insert([
           {
-            user_id: user.id,
+            user_id: user!.id,
             title: title.trim(),
             description: description.trim(),
             category,
