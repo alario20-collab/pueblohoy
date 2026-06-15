@@ -6,9 +6,7 @@ interface ViewProps {
 }
 
 const views = [
-  { id: 'today', label: 'Hoy', emoji: '📅' },
-  { id: 'weekend', label: 'Este finde', emoji: '🎉' },
-  { id: 'kids', label: 'Con niños', emoji: '👨‍👩‍👧‍👦' },
+  { id: 'events', label: 'Eventos', emoji: '📅' },
   { id: 'commerces', label: 'Comercios', emoji: '🏪' },
 ]
 

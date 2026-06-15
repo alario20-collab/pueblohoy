@@ -75,7 +75,7 @@ const DEMO_POSTS: Post[] = [
 export default function Home() {
   const { user } = useAuth()
   const [posts, setPosts] = useState<Post[]>(DEMO_POSTS)
-  const [activeView, setActiveView] = useState('today')
+  const [activeView, setActiveView] = useState('events')
   const [loading, setLoading] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [filters, setFilters] = useState<EventFilters>({
@@ -143,15 +143,8 @@ export default function Home() {
     const commerces = posts.filter(p => p.category === 'commerces')
 
     switch (activeView) {
-      case 'today':
-        return events.filter(e => {
-          const isRecent = Date.now() - new Date(e.created_at).getTime() < 24 * 60 * 60 * 1000
-          return isRecent || e.created_at === 'hoy'
-        })
-      case 'weekend':
+      case 'events':
         return events
-      case 'kids':
-        return events.filter(e => e.title.toLowerCase().includes('niño') || e.title.toLowerCase().includes('infanti') || e.title.toLowerCase().includes('familia'))
       case 'commerces':
         return commerces
       default:
@@ -160,10 +153,8 @@ export default function Home() {
   }
 
   const viewLabels: Record<string, string> = {
-    today: 'Hoy en El Casar',
-    weekend: 'Este finde',
-    kids: 'Planes con niños',
-    commerces: 'Comercios destacados',
+    events: 'Eventos',
+    commerces: 'Comercios',
   }
 
   const filteredPosts = filterPostsByView(posts)
