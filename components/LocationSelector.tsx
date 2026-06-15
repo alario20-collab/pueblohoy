@@ -16,6 +16,13 @@ export interface LocationData {
 }
 
 export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSelectorProps) {
+  interface Suggestion {
+    name: string
+    type: string
+    lat?: number
+    lng?: number
+  }
+
   const [location, setLocation] = useState<LocationData>({
     type: 'current',
     name: 'Mi ubicación',
@@ -24,7 +31,7 @@ export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSel
   })
   const [isOpen, setIsOpen] = useState(false)
   const [searchInput, setSearchInput] = useState('')
-  const [suggestions, setSuggestions] = useState<Array<{ name: string; type: string }>>([])
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [searching, setSearching] = useState(false)
 
   useEffect(() => {
