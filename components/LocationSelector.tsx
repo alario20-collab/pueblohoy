@@ -139,10 +139,13 @@ export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSel
               <button
                 key={`${suggestion.name}-${suggestion.lat}`}
                 onClick={() =>
-                  handleSelectLocation(suggestion.name, 'town', {
-                    lat: suggestion.lat,
-                    lng: suggestion.lng,
-                  })
+                  handleSelectLocation(
+                    suggestion.name,
+                    'town',
+                    suggestion.lat && suggestion.lng
+                      ? { lat: suggestion.lat, lng: suggestion.lng }
+                      : undefined
+                  )
                 }
                 className={`w-full text-left px-4 py-2 hover:bg-gray-50 text-sm border-b ${
                   location.name === suggestion.name ? 'bg-blue-50 text-blue-600' : ''
