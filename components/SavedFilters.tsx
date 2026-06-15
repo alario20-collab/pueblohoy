@@ -16,7 +16,7 @@ interface SavedFiltersProps {
   onLoadFilter: (location: LocationData, filters: EventFilters) => void
   currentFilters: EventFilters
   currentLocation: LocationData
-  pendingLocationToSave?: LocationData
+  pendingLocationToSave?: LocationData | null
 }
 
 export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pendingLocationToSave }: SavedFiltersProps) {
