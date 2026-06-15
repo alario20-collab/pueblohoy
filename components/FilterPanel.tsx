@@ -101,7 +101,7 @@ export function FilterPanel({ activeView, onFiltersChange }: FilterPanelProps) {
     onFiltersChange({ types: [], sources: [], eventTypes: [], towns: [], radius: 15 })
   }
 
-  if (activeView !== 'today' && activeView !== 'weekend' && activeView !== 'kids') {
+  if (activeView !== 'events') {
     return null
   }
 
