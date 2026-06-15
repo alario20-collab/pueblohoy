@@ -180,21 +180,6 @@ export function FilterPanel({ activeView, onFiltersChange }: FilterPanelProps) {
           </div>
         </div>
 
-        {/* Radio de distancia */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2">
-            Radio: <span className="text-blue-600">{radius} km</span>
-          </h3>
-          <input
-            type="range"
-            min="1"
-            max="50"
-            value={radius}
-            onChange={(e) => handleRadiusChange(parseInt(e.target.value))}
-            className="w-full"
-          />
-          <p className="text-xs text-gray-500 mt-1">Desde tu ubicación</p>
-        </div>
 
         {/* Limpiar filtros */}
         {(types.length > 0 || sources.length > 0 || eventTypes.length > 0 || towns.length > 0 || radius !== 15) && (

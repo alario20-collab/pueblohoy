@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { EventFilters } from './FilterPanel'
 import { LocationData } from './LocationSelector'
 
-interface SavedFilter {
+export interface SavedFilter {
   id: string
   name: string
   filters: EventFilters
@@ -13,12 +13,13 @@ interface SavedFilter {
 }
 
 interface SavedFiltersProps {
-  onLoadFilter: (filter: SavedFilter) => void
+  onLoadFilter: (location: LocationData, filters: EventFilters) => void
   currentFilters: EventFilters
   currentLocation: LocationData
+  pendingLocationToSave?: LocationData
 }
 
-export function SavedFilters({ onLoadFilter, currentFilters, currentLocation }: SavedFiltersProps) {
+export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pendingLocationToSave }: SavedFiltersProps) {
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -37,6 +38,14 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation }: 
     }
   }, [])
 
+  useEffect(() => {
+    if (pendingLocationToSave) {
+      setIsCreating(true)
+      setIsOpen(true)
+      setFilterName('')
+    }
+  }, [pendingLocationToSave])
+
   const saveFilters = () => {
     if (!filterName.trim()) return
 
@@ -44,7 +53,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation }: 
       id: Date.now().toString(),
       name: filterName,
       filters: currentFilters,
-      location: currentLocation,
+      location: pendingLocationToSave || currentLocation,
       createdAt: new Date().toISOString(),
     }
 
@@ -145,7 +154,10 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation }: 
                   ) : (
                     <div className="flex items-start justify-between mb-2">
                       <button
-                        onClick={() => onLoadFilter(filter)}
+                        onClick={() => {
+                          onLoadFilter(filter.location, filter.filters)
+                          setIsOpen(false)
+                        }}
                         className="flex-1 text-left font-medium text-sm text-blue-600 hover:text-blue-700"
                       >
                         {filter.name}
@@ -162,7 +174,8 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation }: 
                     </div>
                   )}
                   <p className="text-xs text-gray-600 mb-2">
-                    📍 {filter.location.name} +{filter.location.radius}km
+                    📍 {filter.location.name}
+                    {filter.location.useRadius && ` +${filter.location.radius}km`}
                   </p>
                   <button
                     onClick={() => deleteFilter(filter.id)}

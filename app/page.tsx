@@ -83,7 +83,9 @@ export default function Home() {
     type: 'current',
     name: 'Mi ubicación',
     radius: 50,
+    useRadius: false,
   })
+  const [pendingLocationToSave, setPendingLocationToSave] = useState<LocationData | null>(null)
   const [filters, setFilters] = useState<EventFilters>({
     types: [],
     sources: [],
@@ -169,9 +171,13 @@ export default function Home() {
     setLocation(newLocation)
   }
 
-  const handleLoadSavedFilter = (savedFilter: any) => {
-    setLocation(savedFilter.location)
-    setFilters(savedFilter.filters)
+  const handleLoadSavedFilter = (newLocation: LocationData, newFilters: EventFilters) => {
+    setLocation(newLocation)
+    setFilters(newFilters)
+  }
+
+  const handleSaveFilter = (currentLocation: LocationData) => {
+    setPendingLocationToSave(currentLocation)
   }
 
   return (
@@ -179,8 +185,10 @@ export default function Home() {
       <Header
         onLocationChange={handleLocationChange}
         onLoadSavedFilter={handleLoadSavedFilter}
+        onSaveFilter={handleSaveFilter}
         currentFilters={filters}
         currentLocation={location}
+        pendingLocationToSave={pendingLocationToSave}
       />
       <Categories activeView={activeView} onViewChange={setActiveView} />
 

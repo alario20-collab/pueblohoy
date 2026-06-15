@@ -9,12 +9,14 @@ import { EventFilters } from './FilterPanel'
 
 interface HeaderProps {
   onLocationChange?: (location: LocationData) => void
-  onLoadSavedFilter?: (filter: any) => void
+  onLoadSavedFilter?: (location: LocationData, filters: EventFilters) => void
+  onSaveFilter?: (location: LocationData) => void
   currentFilters?: EventFilters
   currentLocation?: LocationData
+  pendingLocationToSave?: LocationData | null
 }
 
-export function Header({ onLocationChange, onLoadSavedFilter, currentFilters, currentLocation }: HeaderProps) {
+export function Header({ onLocationChange, onLoadSavedFilter, onSaveFilter, currentFilters, currentLocation, pendingLocationToSave }: HeaderProps) {
   const { user, signOut } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
@@ -22,8 +24,12 @@ export function Header({ onLocationChange, onLoadSavedFilter, currentFilters, cu
     onLocationChange?.(location)
   }
 
-  const handleLoadSavedFilter = (filter: any) => {
-    onLoadSavedFilter?.(filter)
+  const handleLoadSavedFilter = (location: LocationData, filters: EventFilters) => {
+    onLoadSavedFilter?.(location, filters)
+  }
+
+  const handleSaveFilter = (location: LocationData) => {
+    onSaveFilter?.(location)
   }
 
   return (
@@ -32,7 +38,7 @@ export function Header({ onLocationChange, onLoadSavedFilter, currentFilters, cu
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {currentLocation ? (
-              <LocationSelector onLocationChange={handleLocationChange} />
+              <LocationSelector onLocationChange={handleLocationChange} onSaveFilter={handleSaveFilter} />
             ) : (
               <div className="flex items-center gap-2">
                 <span className="text-xl">⭐</span>
@@ -47,6 +53,7 @@ export function Header({ onLocationChange, onLoadSavedFilter, currentFilters, cu
                 onLoadFilter={handleLoadSavedFilter}
                 currentFilters={currentFilters}
                 currentLocation={currentLocation}
+                pendingLocationToSave={pendingLocationToSave}
               />
             )}
           </div>
