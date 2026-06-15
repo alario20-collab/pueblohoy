@@ -3,21 +3,52 @@
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { AuthModal } from './AuthModal'
+import { LocationSelector, type LocationData } from './LocationSelector'
+import { SavedFilters } from './SavedFilters'
+import { EventFilters } from './FilterPanel'
 
-export function Header() {
+interface HeaderProps {
+  onLocationChange?: (location: LocationData) => void
+  onLoadSavedFilter?: (filter: any) => void
+  currentFilters?: EventFilters
+  currentLocation?: LocationData
+}
+
+export function Header({ onLocationChange, onLoadSavedFilter, currentFilters, currentLocation }: HeaderProps) {
   const { user, signOut } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
+
+  const handleLocationChange = (location: LocationData) => {
+    onLocationChange?.(location)
+  }
+
+  const handleLoadSavedFilter = (filter: any) => {
+    onLoadSavedFilter?.(filter)
+  }
 
   return (
     <>
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">⭐</span>
-            <div>
-              <h1 className="font-semibold text-sm">Pueblos que sigues</h1>
-              <span className="text-xs text-gray-500">▼</span>
-            </div>
+          <div className="flex items-center gap-4">
+            {currentLocation ? (
+              <LocationSelector onLocationChange={handleLocationChange} />
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-xl">⭐</span>
+                <div>
+                  <h1 className="font-semibold text-sm">Pueblos que sigues</h1>
+                  <span className="text-xs text-gray-500">▼</span>
+                </div>
+              </div>
+            )}
+            {currentFilters && currentLocation && (
+              <SavedFilters
+                onLoadFilter={handleLoadSavedFilter}
+                currentFilters={currentFilters}
+                currentLocation={currentLocation}
+              />
+            )}
           </div>
 
           <div className="flex items-center gap-3">

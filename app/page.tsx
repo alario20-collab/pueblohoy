@@ -6,6 +6,7 @@ import { Categories } from '@/components/Categories'
 import { PostCard } from '@/components/PostCard'
 import { CreatePostModal } from '@/components/CreatePostModal'
 import { FilterPanel, type EventFilters } from '@/components/FilterPanel'
+import { LocationSelector, type LocationData } from '@/components/LocationSelector'
 import { useAuth } from '@/lib/auth-context'
 import { supabase, type Post } from '@/lib/supabase'
 
@@ -78,6 +79,11 @@ export default function Home() {
   const [activeView, setActiveView] = useState('events')
   const [loading, setLoading] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [location, setLocation] = useState<LocationData>({
+    type: 'current',
+    name: 'Mi ubicación',
+    radius: 50,
+  })
   const [filters, setFilters] = useState<EventFilters>({
     types: [],
     sources: [],
@@ -159,9 +165,23 @@ export default function Home() {
 
   const filteredPosts = filterPostsByView(posts)
 
+  const handleLocationChange = (newLocation: LocationData) => {
+    setLocation(newLocation)
+  }
+
+  const handleLoadSavedFilter = (savedFilter: any) => {
+    setLocation(savedFilter.location)
+    setFilters(savedFilter.filters)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header
+        onLocationChange={handleLocationChange}
+        onLoadSavedFilter={handleLoadSavedFilter}
+        currentFilters={filters}
+        currentLocation={location}
+      />
       <Categories activeView={activeView} onViewChange={setActiveView} />
 
       <div className="flex">
