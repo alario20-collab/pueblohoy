@@ -91,7 +91,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       </button>
 
       {isOpen && (
-        <div className="absolute top-10 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-80 max-h-96 overflow-y-auto">
+        <div className="absolute top-10 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-96 max-h-[500px] overflow-y-auto">
           <div className="p-4 border-b">
             {isCreating ? (
               <div className="space-y-2">

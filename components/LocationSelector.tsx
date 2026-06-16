@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface LocationSelectorProps {
   onLocationChange: (location: LocationData) => void
   onSaveFilter?: (location: LocationData) => void
+  externalLocation?: LocationData
 }
 
 export interface LocationData {
@@ -15,24 +16,34 @@ export interface LocationData {
   useRadius: boolean
 }
 
-export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSelectorProps) {
+export function LocationSelector({ onLocationChange, onSaveFilter, externalLocation }: LocationSelectorProps) {
   interface Suggestion {
     name: string
     type: string
     lat?: number
     lng?: number
+    displayName: string
   }
 
-  const [location, setLocation] = useState<LocationData>({
-    type: 'current',
-    name: 'Mi ubicación',
-    radius: 50,
-    useRadius: false,
-  })
+  const [location, setLocation] = useState<LocationData>(
+    externalLocation || {
+      type: 'current',
+      name: 'Mi ubicación',
+      radius: 50,
+      useRadius: false,
+    }
+  )
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [searchInput, setSearchInput] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [searching, setSearching] = useState(false)
+
+  useEffect(() => {
+    if (externalLocation) {
+      setLocation(externalLocation)
+    }
+  }, [externalLocation])
 
   useEffect(() => {
     if (searchInput.trim().length > 2) {
@@ -42,21 +53,42 @@ export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSel
     }
   }, [searchInput])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
+
   const searchTowns = async (query: string) => {
     setSearching(true)
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},Spain&format=json&limit=10&addresstype=village,town,city`
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},Spain&format=json&limit=15&addresstype=village,town,city`
       )
       const data = await response.json()
-      setSuggestions(
-        data.map((item: any) => ({
-          name: item.name,
-          type: 'town',
-          lat: parseFloat(item.lat),
-          lng: parseFloat(item.lon),
-        }))
-      )
+
+      const uniqueSuggestions = new Map<string, Suggestion>()
+      data.forEach((item: any) => {
+        const key = item.name.toLowerCase()
+        if (!uniqueSuggestions.has(key)) {
+          uniqueSuggestions.set(key, {
+            name: item.name,
+            displayName: item.name,
+            type: 'town',
+            lat: parseFloat(item.lat),
+            lng: parseFloat(item.lon),
+          })
+        }
+      })
+
+      setSuggestions(Array.from(uniqueSuggestions.values()))
     } catch (error) {
       console.error('Error searching towns:', error)
       setSuggestions([])
@@ -94,7 +126,7 @@ export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSel
   const displayText = location.useRadius ? `${location.name} +${location.radius}km` : location.name
 
   return (
-    <div className="relative">
+    <div className="relative" ref={wrapperRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded"
@@ -108,16 +140,23 @@ export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSel
 
       {isOpen && (
         <div className="absolute top-12 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-80">
-          <div className="p-4 border-b">
+          <div className="flex items-center justify-between p-4 border-b">
             <input
               type="text"
               placeholder="Buscar pueblo en España..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
             />
-            {searching && <p className="text-xs text-gray-500 mt-2">Buscando...</p>}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="ml-2 text-gray-500 hover:text-gray-700 text-lg font-bold"
+            >
+              ✕
+            </button>
           </div>
+
+          {searching && <p className="text-xs text-gray-500 p-4">Buscando...</p>}
 
           <div className="max-h-64 overflow-y-auto">
             <button
@@ -135,9 +174,9 @@ export function LocationSelector({ onLocationChange, onSaveFilter }: LocationSel
               </div>
             )}
 
-            {suggestions.map((suggestion) => (
+            {suggestions.map((suggestion, idx) => (
               <button
-                key={`${suggestion.name}-${suggestion.lat}`}
+                key={`${suggestion.name}-${idx}`}
                 onClick={() =>
                   handleSelectLocation(
                     suggestion.name,

@@ -38,7 +38,11 @@ export function Header({ onLocationChange, onLoadSavedFilter, onSaveFilter, curr
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {currentLocation ? (
-              <LocationSelector onLocationChange={handleLocationChange} onSaveFilter={handleSaveFilter} />
+              <LocationSelector
+                onLocationChange={handleLocationChange}
+                onSaveFilter={handleSaveFilter}
+                externalLocation={currentLocation}
+              />
             ) : (
               <div className="flex items-center gap-2">
                 <span className="text-xl">⭐</span>
