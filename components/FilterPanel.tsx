@@ -132,7 +132,7 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
   }
 
   return (
-    <>
+    <div ref={wrapperRef}>
       {/* Botón flotante para abrir filtros */}
       {!isOpen && (
         <button
@@ -146,10 +146,7 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
 
       {/* Panel de filtros flotante */}
       {isOpen && (
-        <div
-          ref={wrapperRef}
-          className="fixed right-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col"
-        >
+        <div className="fixed right-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
           {/* Header con botón X */}
           <div className="flex items-center justify-between mb-4 pb-4 border-b">
             <h3 className="font-semibold text-gray-900">Filtros</h3>
@@ -249,6 +246,6 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }

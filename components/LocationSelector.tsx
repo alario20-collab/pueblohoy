@@ -132,7 +132,7 @@ export function LocationSelector({ onLocationChange, onSaveFilter, externalLocat
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded"
       >
         <span className="text-xl">📍</span>
-        <div className="text-left">
+        <div className="text-left min-w-[200px]">
           <h2 className="font-semibold text-sm">{displayText}</h2>
           <span className="text-xs text-gray-500">▼</span>
         </div>

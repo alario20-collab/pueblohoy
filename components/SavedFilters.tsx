@@ -95,7 +95,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
   }
 
   return (
-    <>
+    <div ref={wrapperRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded text-sm text-gray-600"
@@ -105,10 +105,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       </button>
 
       {isOpen && (
-        <div
-          ref={wrapperRef}
-          className="fixed left-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col"
-        >
+        <div className="fixed left-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
           <div className="flex items-center justify-between mb-4 pb-4 border-b">
             <h3 className="font-semibold text-gray-900">Mis filtros</h3>
             <button
@@ -225,6 +222,6 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
           )}
         </div>
       )}
-    </>
+    </div>
   )
 }
