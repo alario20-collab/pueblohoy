@@ -50,7 +50,8 @@ const FILTER_OPTIONS = {
 }
 
 export function FilterPanel({ activeView, onFiltersChange, currentFilters }: FilterPanelProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const [isOpen, setIsOpen] = useState(true)
   const [types, setTypes] = useState<string[]>([])
   const [sources, setSources] = useState<string[]>([])
@@ -70,7 +71,11 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      const target = event.target as Node
+      const isClickOnButton = buttonRef.current?.contains(target)
+      const isClickOnPanel = panelRef.current?.contains(target)
+
+      if (!isClickOnButton && !isClickOnPanel) {
         setIsOpen(false)
       }
     }
@@ -132,10 +137,11 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
   }
 
   return (
-    <div ref={wrapperRef}>
+    <>
       {/* Botón flotante para abrir filtros */}
       {!isOpen && (
         <button
+          ref={buttonRef}
           onClick={() => setIsOpen(true)}
           className="fixed right-4 bottom-24 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-40"
           title="Abrir filtros"
@@ -146,7 +152,9 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
 
       {/* Panel de filtros flotante */}
       {isOpen && (
-        <div className="fixed right-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
+        <div
+          ref={panelRef}
+          className="fixed right-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
           {/* Header con botón X */}
           <div className="flex items-center justify-between mb-4 pb-4 border-b">
             <h3 className="font-semibold text-gray-900">Filtros</h3>
@@ -246,6 +254,6 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

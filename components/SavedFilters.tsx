@@ -20,7 +20,8 @@ interface SavedFiltersProps {
 }
 
 export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pendingLocationToSave }: SavedFiltersProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -49,7 +50,11 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      const target = event.target as Node
+      const isClickOnButton = buttonRef.current?.contains(target)
+      const isClickOnPanel = panelRef.current?.contains(target)
+
+      if (!isClickOnButton && !isClickOnPanel) {
         setIsOpen(false)
       }
     }
@@ -95,8 +100,9 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
   }
 
   return (
-    <div ref={wrapperRef}>
+    <>
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded text-sm text-gray-600"
         title="Tus filtros guardados"
@@ -105,7 +111,9 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       </button>
 
       {isOpen && (
-        <div className="fixed left-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
+        <div
+          ref={panelRef}
+          className="fixed left-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
           <div className="flex items-center justify-between mb-4 pb-4 border-b">
             <h3 className="font-semibold text-gray-900">Mis filtros</h3>
             <button
@@ -222,6 +230,6 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
           )}
         </div>
       )}
-    </div>
+    </>
   )
 }
