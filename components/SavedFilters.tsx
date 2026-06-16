@@ -96,7 +96,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
   }
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className="relative inline-block" ref={wrapperRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded text-sm text-gray-600"
