@@ -105,7 +105,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       </button>
 
       {isOpen && (
-        <div className="absolute top-12 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-80 max-h-96 overflow-y-auto">
+        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-80 max-h-96 overflow-y-auto">
           <div className="p-4 border-b flex items-center justify-between">
             <h3 className="font-semibold text-sm">Mis filtros guardados</h3>
             <button
