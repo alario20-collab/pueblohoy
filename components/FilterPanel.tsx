@@ -168,91 +168,90 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
 
           {/* Contenido de filtros */}
           <div className="flex-1 overflow-y-auto">
-      <div className="space-y-6">
-        {/* Tipos rápidos */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2">Filtros rápidos</h3>
-          <div className="space-y-2">
-            {FILTER_OPTIONS.types.map((type) => (
-              <label key={type.id} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={types.includes(type.id)}
-                  onChange={() => handleTypeToggle(type.id)}
-                  className="w-4 h-4 rounded border-gray-300"
-                />
-                <span className="text-sm text-gray-700">{type.emoji} {type.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+            <div className="space-y-6">
+              {/* Tipos rápidos */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Filtros rápidos</h3>
+                <div className="space-y-2">
+                  {FILTER_OPTIONS.types.map((type) => (
+                    <label key={type.id} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={types.includes(type.id)}
+                        onChange={() => handleTypeToggle(type.id)}
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700">{type.emoji} {type.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-        {/* Fuentes */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2">Fuente</h3>
-          <div className="space-y-2">
-            {FILTER_OPTIONS.sources.map((source) => (
-              <label key={source.id} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={sources.includes(source.id)}
-                  onChange={() => handleSourceToggle(source.id)}
-                  className="w-4 h-4 rounded border-gray-300"
-                />
-                <span className="text-sm text-gray-700">{source.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+              {/* Fuentes */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Fuente</h3>
+                <div className="space-y-2">
+                  {FILTER_OPTIONS.sources.map((source) => (
+                    <label key={source.id} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sources.includes(source.id)}
+                        onChange={() => handleSourceToggle(source.id)}
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700">{source.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-        {/* Tipo de evento */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2">Tipo de evento</h3>
-          <div className="space-y-2">
-            {FILTER_OPTIONS.eventTypes.map((eventType) => (
-              <label key={eventType.id} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={eventTypes.includes(eventType.id)}
-                  onChange={() => handleEventTypeToggle(eventType.id)}
-                  className="w-4 h-4 rounded border-gray-300"
-                />
-                <span className="text-sm text-gray-700">{eventType.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+              {/* Tipo de evento */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Tipo de evento</h3>
+                <div className="space-y-2">
+                  {FILTER_OPTIONS.eventTypes.map((eventType) => (
+                    <label key={eventType.id} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={eventTypes.includes(eventType.id)}
+                        onChange={() => handleEventTypeToggle(eventType.id)}
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700">{eventType.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-        {/* Pueblos */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2">Pueblos</h3>
-          <div className="space-y-2">
-            {FILTER_OPTIONS.towns.map((town) => (
-              <label key={town.id} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={towns.includes(town.id)}
-                  onChange={() => handleTownToggle(town.id)}
-                  className="w-4 h-4 rounded border-gray-300"
-                />
-                <span className="text-sm text-gray-700">{town.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+              {/* Pueblos */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Pueblos</h3>
+                <div className="space-y-2">
+                  {FILTER_OPTIONS.towns.map((town) => (
+                    <label key={town.id} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={towns.includes(town.id)}
+                        onChange={() => handleTownToggle(town.id)}
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700">{town.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-
-        {/* Limpiar filtros */}
-        {(types.length > 0 || sources.length > 0 || eventTypes.length > 0 || towns.length > 0 || radius !== 15) && (
-          <button
-            onClick={handleClearFilters}
-            className="w-full py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition"
-          >
-            Limpiar filtros
-          </button>
-        )}
+              {/* Limpiar filtros */}
+              {(types.length > 0 || sources.length > 0 || eventTypes.length > 0 || towns.length > 0 || radius !== 15) && (
+                <button
+                  onClick={handleClearFilters}
+                  className="w-full py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition"
+                >
+                  Limpiar filtros
+                </button>
+              )}
+            </div>
           </div>
-        </div>
       )}
     </>
   )
