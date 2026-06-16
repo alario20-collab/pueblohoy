@@ -12,7 +12,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalPosts: 0,
     totalUsers: 0,
-    recentPosts: [],
+    recentPosts: [] as any[],
   })
   const [loading, setLoading] = useState(true)
 
