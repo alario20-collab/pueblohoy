@@ -192,8 +192,7 @@ export default function Home() {
       />
       <Categories activeView={activeView} onViewChange={setActiveView} />
 
-      <div className="flex">
-        <main className="flex-1 max-w-2xl mx-auto p-4 pb-24">
+      <main className="max-w-2xl mx-auto p-4 pb-24">
         <h2 className="text-2xl font-bold mb-4 text-gray-900">
           {viewLabels[activeView]}
         </h2>
@@ -215,10 +214,9 @@ export default function Home() {
             <PostCard key={post.id} post={post} />
           ))}
         </div>
-        </main>
+      </main>
 
-        <FilterPanel activeView={activeView} onFiltersChange={setFilters} currentFilters={filters} />
-      </div>
+      <FilterPanel activeView={activeView} onFiltersChange={setFilters} currentFilters={filters} />
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center px-4 py-3">
         <button className="text-2xl hover:text-blue-700 transition">🏠</button>

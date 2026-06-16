@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface FilterPanelProps {
   activeView: string
@@ -50,6 +50,8 @@ const FILTER_OPTIONS = {
 }
 
 export function FilterPanel({ activeView, onFiltersChange, currentFilters }: FilterPanelProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(true)
   const [types, setTypes] = useState<string[]>([])
   const [sources, setSources] = useState<string[]>([])
   const [eventTypes, setEventTypes] = useState<string[]>([])
@@ -65,6 +67,19 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
       setRadius(currentFilters.radius || 15)
     }
   }, [currentFilters])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen && activeView === 'events') {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, activeView])
 
   const handleTypeToggle = (id: string) => {
     const newTypes = types.includes(id)
@@ -117,7 +132,37 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
   }
 
   return (
-    <aside className="hidden lg:block w-64 bg-white border-l border-gray-200 p-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+    <>
+      {/* Botón flotante para abrir filtros */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed right-4 bottom-24 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-40"
+          title="Abrir filtros"
+        >
+          🔍
+        </button>
+      )}
+
+      {/* Panel de filtros flotante */}
+      {isOpen && (
+        <div
+          ref={wrapperRef}
+          className="fixed right-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col"
+        >
+          {/* Header con botón X */}
+          <div className="flex items-center justify-between mb-4 pb-4 border-b">
+            <h3 className="font-semibold text-gray-900">Filtros</h3>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-gray-500 hover:text-gray-700 text-lg font-bold"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Contenido de filtros */}
+          <div className="flex-1 overflow-y-auto">
       <div className="space-y-6">
         {/* Tipos rápidos */}
         <div>
@@ -201,7 +246,9 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
             Limpiar filtros
           </button>
         )}
-      </div>
-    </aside>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
