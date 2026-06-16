@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface FilterPanelProps {
   activeView: string
   onFiltersChange: (filters: EventFilters) => void
+  currentFilters?: EventFilters
 }
 
 export interface EventFilters {
@@ -48,12 +49,22 @@ const FILTER_OPTIONS = {
   ],
 }
 
-export function FilterPanel({ activeView, onFiltersChange }: FilterPanelProps) {
+export function FilterPanel({ activeView, onFiltersChange, currentFilters }: FilterPanelProps) {
   const [types, setTypes] = useState<string[]>([])
   const [sources, setSources] = useState<string[]>([])
   const [eventTypes, setEventTypes] = useState<string[]>([])
   const [towns, setTowns] = useState<string[]>([])
   const [radius, setRadius] = useState(15)
+
+  useEffect(() => {
+    if (currentFilters) {
+      setTypes(currentFilters.types || [])
+      setSources(currentFilters.sources || [])
+      setEventTypes(currentFilters.eventTypes || [])
+      setTowns(currentFilters.towns || [])
+      setRadius(currentFilters.radius || 15)
+    }
+  }, [currentFilters])
 
   const handleTypeToggle = (id: string) => {
     const newTypes = types.includes(id)

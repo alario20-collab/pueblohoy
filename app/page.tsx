@@ -217,7 +217,7 @@ export default function Home() {
         </div>
         </main>
 
-        <FilterPanel activeView={activeView} onFiltersChange={setFilters} />
+        <FilterPanel activeView={activeView} onFiltersChange={setFilters} currentFilters={filters} />
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center px-4 py-3">

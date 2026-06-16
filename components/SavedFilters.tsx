@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { EventFilters } from './FilterPanel'
 import { LocationData } from './LocationSelector'
 
@@ -20,6 +20,7 @@ interface SavedFiltersProps {
 }
 
 export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pendingLocationToSave }: SavedFiltersProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -45,6 +46,19 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       setFilterName('')
     }
   }, [pendingLocationToSave])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
 
   const saveFilters = () => {
     if (!filterName.trim()) return
@@ -81,7 +95,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={wrapperRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded text-sm text-gray-600"
@@ -91,8 +105,16 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       </button>
 
       {isOpen && (
-        <div className="absolute top-10 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-96 max-h-[500px] overflow-y-auto">
-          <div className="p-4 border-b">
+        <div className="absolute top-10 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-96 max-h-[500px] overflow-y-auto">
+          <div className="flex items-center justify-between p-4 border-b">
+            <h3 className="font-semibold text-sm">Mis filtros guardados</h3>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-gray-500 hover:text-gray-700 text-lg font-bold"
+            >
+              ✕
+            </button>
+          </div>
             {isCreating ? (
               <div className="space-y-2">
                 <input
