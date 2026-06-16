@@ -252,6 +252,7 @@ export function FilterPanel({ activeView, onFiltersChange, currentFilters }: Fil
               )}
             </div>
           </div>
+        </div>
       )}
     </>
   )
