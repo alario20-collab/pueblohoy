@@ -20,8 +20,7 @@ interface SavedFiltersProps {
 }
 
 export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pendingLocationToSave }: SavedFiltersProps) {
-  const panelRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -50,11 +49,7 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node
-      const isClickOnButton = buttonRef.current?.contains(target)
-      const isClickOnPanel = panelRef.current?.contains(target)
-
-      if (!isClickOnButton && !isClickOnPanel) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
     }
@@ -100,9 +95,8 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
   }
 
   return (
-    <>
+    <div className="relative" ref={wrapperRef}>
       <button
-        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1 rounded text-sm text-gray-600"
         title="Tus filtros guardados"
@@ -111,11 +105,9 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
       </button>
 
       {isOpen && (
-        <div
-          ref={panelRef}
-          className="fixed left-4 top-20 bottom-24 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 w-72 max-h-[calc(100vh-150px)] overflow-y-auto z-40 flex flex-col">
-          <div className="flex items-center justify-between mb-4 pb-4 border-b">
-            <h3 className="font-semibold text-gray-900">Mis filtros</h3>
+        <div className="absolute top-12 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-80 max-h-96 overflow-y-auto">
+          <div className="p-4 border-b flex items-center justify-between">
+            <h3 className="font-semibold text-sm">Mis filtros guardados</h3>
             <button
               onClick={() => setIsOpen(false)}
               className="text-gray-500 hover:text-gray-700 text-lg font-bold"
@@ -124,112 +116,114 @@ export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pe
             </button>
           </div>
 
-          {/* Botón guardar filtro actual */}
-          {!isCreating && (
-            <button
-              onClick={() => setIsCreating(true)}
-              className="w-full bg-green-600 text-white px-3 py-2 rounded text-sm font-medium hover:bg-green-700 mb-4"
-            >
-              + Guardar filtro actual
-            </button>
-          )}
+          <div className="p-4 space-y-3">
+            {/* Botón guardar filtro actual */}
+            {!isCreating && (
+              <button
+                onClick={() => setIsCreating(true)}
+                className="w-full bg-green-600 text-white px-3 py-2 rounded text-sm font-medium hover:bg-green-700"
+              >
+                + Guardar filtro actual
+              </button>
+            )}
 
-          {/* Crear nuevo filtro */}
-          {isCreating && (
-            <div className="space-y-2 mb-4 p-3 bg-gray-50 rounded-lg">
-              <input
-                type="text"
-                placeholder="Nombre del filtro..."
-                value={filterName}
-                onChange={(e) => setFilterName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
-                autoFocus
-              />
-              <div className="flex gap-2">
-                <button
-                  onClick={saveFilters}
-                  className="flex-1 bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium hover:bg-blue-700"
-                >
-                  Guardar
-                </button>
-                <button
-                  onClick={() => {
-                    setIsCreating(false)
-                    setFilterName('')
-                  }}
-                  className="flex-1 bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-medium hover:bg-gray-300"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Lista de filtros guardados */}
-          {savedFilters.length > 0 ? (
-            <div className="space-y-2">
-              {savedFilters.map((filter) => (
-                <div key={filter.id} className="p-3 bg-gray-50 rounded-lg">
-                  {editingId === filter.id ? (
-                    <div className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        value={editingName}
-                        onChange={(e) => setEditingName(e.target.value)}
-                        className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                        autoFocus
-                      />
-                      <button
-                        onClick={() => updateFilterName(filter.id, editingName)}
-                        className="text-green-600 hover:text-green-700 text-sm font-medium"
-                      >
-                        ✓
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-start justify-between mb-2">
-                      <button
-                        onClick={() => {
-                          onLoadFilter(filter.location, filter.filters)
-                          setIsOpen(false)
-                        }}
-                        className="flex-1 text-left font-medium text-sm text-blue-600 hover:text-blue-700"
-                      >
-                        {filter.name}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditingId(filter.id)
-                          setEditingName(filter.name)
-                        }}
-                        className="text-gray-500 hover:text-gray-700 text-sm"
-                      >
-                        ✏️
-                      </button>
-                    </div>
-                  )}
-                  <p className="text-xs text-gray-600 mb-2">
-                    📍 {filter.location.name}
-                    {filter.location.useRadius && ` +${filter.location.radius}km`}
-                  </p>
+            {/* Crear nuevo filtro */}
+            {isCreating && (
+              <div className="space-y-2 p-3 bg-gray-50 rounded-lg">
+                <input
+                  type="text"
+                  placeholder="Nombre del filtro..."
+                  value={filterName}
+                  onChange={(e) => setFilterName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                  autoFocus
+                />
+                <div className="flex gap-2">
                   <button
-                    onClick={() => deleteFilter(filter.id)}
-                    className="text-xs text-red-600 hover:text-red-700 font-medium"
+                    onClick={saveFilters}
+                    className="flex-1 bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium hover:bg-blue-700"
                   >
-                    Eliminar
+                    Guardar
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsCreating(false)
+                      setFilterName('')
+                    }}
+                    className="flex-1 bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-medium hover:bg-gray-300"
+                  >
+                    Cancelar
                   </button>
                 </div>
-              ))}
-            </div>
-          ) : (
-            !isCreating && (
-              <div className="text-center text-gray-500 text-sm">
-                No hay filtros guardados aún
               </div>
-            )
-          )}
+            )}
+
+            {/* Lista de filtros guardados */}
+            {savedFilters.length > 0 && (
+              <div className="space-y-2 border-t pt-3">
+                {savedFilters.map((filter) => (
+                  <div key={filter.id} className="p-2 bg-gray-50 rounded text-sm">
+                    {editingId === filter.id ? (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                          className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => updateFilterName(filter.id, editingName)}
+                          className="text-green-600 hover:text-green-700 text-xs font-medium"
+                        >
+                          ✓
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between gap-2">
+                        <button
+                          onClick={() => {
+                            onLoadFilter(filter.location, filter.filters)
+                            setIsOpen(false)
+                          }}
+                          className="flex-1 text-left font-medium text-xs text-blue-600 hover:text-blue-700"
+                        >
+                          {filter.name}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingId(filter.id)
+                            setEditingName(filter.name)
+                          }}
+                          className="text-gray-500 hover:text-gray-700 text-xs"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => deleteFilter(filter.id)}
+                          className="text-xs text-red-600 hover:text-red-700 font-medium"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      📍 {filter.location.name}
+                      {filter.location.useRadius && ` +${filter.location.radius}km`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {!savedFilters.length && !isCreating && (
+              <div className="text-center text-gray-500 text-xs">
+                No hay filtros guardados
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
