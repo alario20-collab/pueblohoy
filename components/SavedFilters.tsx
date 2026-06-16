@@ -21,6 +21,7 @@ interface SavedFiltersProps {
 
 export function SavedFilters({ onLoadFilter, currentFilters, currentLocation, pendingLocationToSave }: SavedFiltersProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
+
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
